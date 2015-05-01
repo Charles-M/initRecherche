@@ -1,7 +1,9 @@
 package graph;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.io.*;
+import java.util.Stack;
 
 public class Graph {
 	private ArrayList<Edge>[] adj;
@@ -29,7 +31,7 @@ public class Graph {
 		adj[w].add(e);
 	}
 
-	public Iterable<Edge> adj(int v) {
+	public ArrayList<Edge> adj(int v) {
 		return adj[v];
 	}
 
@@ -66,4 +68,13 @@ public class Graph {
 		}
 	}
 
+	private Stack<Integer> mark = new Stack<>();
+
+	public void dfs(int v) {
+		System.out.println(v); // opération souhaitée pendant le parcours
+		mark.push(v);
+		for (Edge s : adj(v))
+			if (!mark.contains(s.to.num))
+				dfs(s.to.num);
+	}
 }

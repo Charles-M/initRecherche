@@ -12,19 +12,12 @@ public class Main {
 	private String contenu_fichier;
 	private Graph graph;
 	
-	public static void main(String[] args) {
-		try {
-			new  Main() ;
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
 	public Main() throws IOException {
 		lireFichier("graph1_8") ;
 		construireGraph() ;
-		graph.writeDot("dot.txt", true) ;
-		Runtime.getRuntime().exec("dot -Tjpg -o img.jpg dot.txt") ;
+		/*graph.writeDot("dot.txt", true) ;
+		Runtime.getRuntime().exec("circo -Tjpg -o img.jpg dot.txt") ;*/
+		graph.dfs(1) ;
 	}
 	
 	private void lireFichier(String path) throws IOException {
@@ -40,23 +33,33 @@ public class Main {
 	
 	private void construireGraph() throws IOException {
         graph = new Graph(nb_noeud + 1);
-        int ligne = 1, colonne = 1;
+        int ligne = 1, colonne ;
         String splited[] =contenu_fichier.split(" ") ;
+        StringReader s2 ;
+        Sommet source ;
+        boolean operande1, operande2 ;
         for (String string : splited){
-        	string = string.substring(0, ligne - 1);
-            StringReader s2 = new StringReader(string);
-            int c;
-            while ((c = s2.read()) != -1) {
-                if ((char)c == '+') {
-                	graph.addEdge(new Edge(new Sommet(ligne, true), new Sommet(colonne, true), '+'));
-                } else if((char)c == '-'){
-                	graph.addEdge(new Edge(new Sommet(ligne, true), new Sommet(colonne, true), '-'));
-                }
+        	operande1 = (string.charAt(ligne-1) == '1' )? true : false  ;
+        	source = new Sommet(ligne, operande1) ;
+            s2 = new StringReader(string);
+            char c;
+            colonne = 1;
+            while ((c = (char)s2.read()) != 65535) {
+            	operande2 = (splited[colonne-1].charAt(colonne-1) == '1') ? true : false ;
+            	if(c != '0')
+                	graph.addEdge(new Edge(source, new Sommet(colonne, operande2), c));
                 colonne++;
             }
-            colonne = 1;
             ligne++;
             s2.close();
         }
     }
+	
+	public static void main(String[] args) {
+		try {
+			new  Main() ;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 }

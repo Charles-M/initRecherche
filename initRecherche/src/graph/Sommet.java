@@ -17,7 +17,6 @@ public class Sommet {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + num;
-		result = prime * result + (operateur ? 1231 : 1237);
 		return result;
 	}
 
@@ -31,8 +30,6 @@ public class Sommet {
 			return false;
 		Sommet other = (Sommet) obj;
 		if (num != other.num)
-			return false;
-		if (operateur != other.operateur)
 			return false;
 		return true;
 	}
