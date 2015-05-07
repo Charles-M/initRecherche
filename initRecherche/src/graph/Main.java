@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.Stack;
 
 public class Main {
 	
@@ -17,7 +18,10 @@ public class Main {
 		construireGraph() ;
 		/*graph.writeDot("dot.txt", true) ;
 		Runtime.getRuntime().exec("circo -Tjpg -o img.jpg dot.txt") ;*/
-		graph.dfs(1) ;
+		Stack<Integer> s = new Stack<Integer>() ;
+		graph.dfs(1, s) ;
+		for(Integer i : s)
+			System.out.println(i);
 	}
 	
 	private void lireFichier(String path) throws IOException {

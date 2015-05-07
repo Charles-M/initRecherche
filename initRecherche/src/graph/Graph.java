@@ -68,13 +68,11 @@ public class Graph {
 		}
 	}
 
-	private Stack<Integer> mark = new Stack<>();
-
-	public void dfs(int v) {
-		System.out.println(v); // opération souhaitée pendant le parcours
+	public void dfs(int v, Stack<Integer> mark) {
+		// opération souhaitée pendant le parcours
 		mark.push(v);
 		for (Edge s : adj(v))
 			if (!mark.contains(s.to.num))
-				dfs(s.to.num);
+				dfs(s.to.num, mark);
 	}
 }
