@@ -2,7 +2,7 @@ package graph;
 
 public class Sommet {
 
-	public int num;
+	public Integer num;
 	// true = AND false = OR
 	public boolean operateur;
 
