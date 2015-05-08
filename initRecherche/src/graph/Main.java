@@ -14,7 +14,7 @@ public class Main {
 	private Graph graph;
 
 	public Main() throws IOException {
-		String nom = "graph4" ;
+		String nom = "graphDroso" ;
 		lireFichier(nom);
 		construireGraph();
 		
@@ -24,7 +24,7 @@ public class Main {
 		Graph trans = graph.transition(); 
 		
 		trans.writeDot("dotTrans.txt", false, null);
-		Runtime.getRuntime().exec("dot -Tjpg -o "+nom+"Transition.jpg dotTrans.txt");
+		Runtime.getRuntime().exec("sfdp -Tjpg -o "+nom+"Transition.jpg dotTrans.txt");
 		
 		/*ArrayList<ArrayList<Integer>> coupe = graph.minCut();
 		while(!graph.coupeValide(coupe)) coupe = graph.minCut() ;

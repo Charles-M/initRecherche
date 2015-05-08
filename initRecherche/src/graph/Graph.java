@@ -6,12 +6,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
+@SuppressWarnings("unchecked")
 public class Graph {
 	private ArrayList<Edge>[] adj;
 	int V;
 	int E;
 
-	@SuppressWarnings("unchecked")
 	public Graph(int N) {
 		this.V = N;
 		this.E = 0;
@@ -82,7 +82,9 @@ public class Graph {
 		try {
 			PrintWriter writer = new PrintWriter(s, "UTF-8");
 			writer.println("digraph G{");
-			writer.println("splines=true;");
+			//writer.println("splines=true;");
+			//writer.println("outputorder=breadthfirst;");
+			// writer.println("truecolor=true;");
 			if (horizontal)
 				writer.println("rankdir=\"LR\"");
 			if (coupe != null) {
@@ -249,31 +251,30 @@ public class Graph {
 		int nb_sommets = (int) Math.pow(2, V);
 		Graph g = new Graph(nb_sommets);
 		for (int i = 0; i < nb_sommets; i++) {
-			System.out.println("i = "+i);
+			//System.out.println("i = "+i);
 			boolean[] bits = new boolean[V];
 			for (int h =0; h < V; h++) 
 				bits[h] = (i & (1 << h)) != 0;
 			for (int j = 0; j < V; j++) {
-				System.out.println("j = "+j);
+				//System.out.println("j = "+j);
 				boolean op = next(j).get(0).from.operateur;
 				boolean resultat;
 				resultat = op;
-				String symb = (op)? "/\\" : "\\/" ;
+				//String symb = (op)? "/\\" : "\\/" ;
 				for (Edge e : prev(j)) {
 					boolean p = (e.sign == '+')?bits[e.from.num]:!bits[e.from.num] ;
 					resultat = (op) ? resultat && p : resultat || p;
 
-					System.out.print("   "+p+" "+symb+" ");
+					//System.out.print("   "+p+" "+symb+" ");
 				}
-				System.out.println("");
+				//System.out.println("");
 				if (resultat ^ bits[j]) {
-					System.out.println("resultat = "+resultat);
+					//System.out.println("resultat = "+resultat);
 					int to = (int) ((resultat) ? i + Math.pow(2, j) : i - Math.pow(2, j));
-					System.out.println("to ="+to);
+					//System.out.println("to ="+to);
 					g.addEdge(new Edge(new Sommet(i, true), new Sommet(to, true), '*'));
 				}
 			}
-
 		}
 
 		return g;
