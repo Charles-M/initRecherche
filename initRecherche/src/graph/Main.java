@@ -14,14 +14,19 @@ public class Main {
 	private Graph graph;
 
 	public Main() throws IOException {
-		String nom = "graph1" ;
+		String nom = "graph4" ;
 		lireFichier(nom);
 		construireGraph();
 		
 		graph.writeDot("dot1.txt", false, null);
 		Runtime.getRuntime().exec("circo -Tjpg -o "+nom+".jpg dot1.txt");
 		
-		ArrayList<ArrayList<Integer>> coupe = graph.minCut();
+		Graph trans = graph.transition(); 
+		
+		trans.writeDot("dotTrans.txt", false, null);
+		Runtime.getRuntime().exec("dot -Tjpg -o "+nom+"Transition.jpg dotTrans.txt");
+		
+		/*ArrayList<ArrayList<Integer>> coupe = graph.minCut();
 		while(!graph.coupeValide(coupe)) coupe = graph.minCut() ;
 		System.out.println(coupe);
 		graph.writeDot("dot2.txt", false, coupe);
@@ -32,7 +37,7 @@ public class Main {
 			todo.add(new Integer(i));
 		
 		graph.writeDot("dot3.txt", false, graph.SCC());
-		Runtime.getRuntime().exec("dot -Tjpg -o "+nom+"SCC.jpg dot3.txt");
+		Runtime.getRuntime().exec("dot -Tjpg -o "+nom+"SCC.jpg dot3.txt");*/
 
 	}
 
@@ -48,20 +53,20 @@ public class Main {
 	}
 
 	private void construireGraph() throws IOException {
-		graph = new Graph(nb_noeud + 1);
-		int ligne = 1, colonne;
+		graph = new Graph(nb_noeud);
+		int ligne = 0, colonne;
 		String splited[] = contenu_fichier.split(" ");
 		StringReader s2;
 		Sommet source;
 		boolean operande1, operande2;
 		for (String string : splited) {
-			operande1 = (string.charAt(ligne - 1) == '1') ? true : false;
+			operande1 = (string.charAt(ligne) == '1') ? true : false;
 			source = new Sommet(ligne, operande1);
 			s2 = new StringReader(string);
 			char c;
-			colonne = 1;
+			colonne = 0;
 			while ((c = (char) s2.read()) != 65535) {
-				operande2 = (splited[colonne - 1].charAt(colonne - 1) == '1') ? true : false;
+				operande2 = (splited[colonne].charAt(colonne) == '1') ? true : false;
 				if (c != '0' && ligne != colonne)
 					graph.addEdge(new Edge(source, new Sommet(colonne, operande2), c));
 				colonne++;

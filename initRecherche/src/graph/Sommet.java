@@ -40,7 +40,7 @@ public class Sommet {
 	@Override
 	public String toString() {
 		String op = (operateur)? "AND": "OR" ;
-		return num+"" ;
-		//return "\""+num+" ("+op+")\"";
+		//return num+"" ;
+		return "\""+num+" ("+op+")\"";
 	}
 }

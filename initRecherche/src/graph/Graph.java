@@ -52,10 +52,18 @@ public class Graph {
 		return adj[v];
 	}
 
-	public Iterable<Edge> next(int v) {
+	public ArrayList<Edge> next(int v) {
 		ArrayList<Edge> n = new ArrayList<Edge>();
 		for (Edge e : adj(v))
 			if (e.to.num != v)
+				n.add(e);
+		return n;
+	}
+
+	public ArrayList<Edge> prev(int v) {
+		ArrayList<Edge> n = new ArrayList<Edge>();
+		for (Edge e : adj(v))
+			if (e.from.num != v)
 				n.add(e);
 		return n;
 	}
@@ -101,7 +109,7 @@ public class Graph {
 		for (Edge s : next(v))
 			if (!gray.contains(s.to.num))
 				dfs(s.to.num, gray, black, todo);
-		black.add(v) ;
+		black.add(v);
 	}
 
 	public ArrayList<Integer> dfs(ArrayList<Integer> todo) {
@@ -173,7 +181,7 @@ public class Graph {
 		Integer suppr = edge.to.num;
 		ArrayList<Edge> ad = new ArrayList<Edge>(adj(suppr));
 		for (Edge e : ad) {
-			 //if (e.to.num != edge.to.num || e.from.num != edge.from.num) {
+			// if (e.to.num != edge.to.num || e.from.num != edge.from.num) {
 			if (!e.equals(edge)) {
 				if (e.to.num == suppr) {
 					if (e.from.num != edge.from.num) {
@@ -198,7 +206,8 @@ public class Graph {
 
 		int somme = liste1.size() + liste2.size();
 
-		if (liste1.size() < somme / 3 || liste2.size() < somme / 3) 		return false;
+		if (liste1.size() < somme / 3 || liste2.size() < somme / 3)
+			return false;
 		boolean cpt[] = new boolean[somme];
 		for (Integer i : liste1) {
 			for (Edge e : next(i)) {
@@ -213,7 +222,8 @@ public class Graph {
 			if (cpt[i])
 				cpt1++;
 		}
-		if (cpt1 != 1)	return false;
+		if (cpt1 != 1)
+			return false;
 
 		cpt = new boolean[somme];
 		for (Integer i : liste2) {
@@ -229,8 +239,43 @@ public class Graph {
 			if (cpt[i])
 				cpt1++;
 		}
-		if (cpt1 != 1)	return false;
+		if (cpt1 != 1)
+			return false;
 
 		return true;
+	}
+
+	public Graph transition() {
+		int nb_sommets = (int) Math.pow(2, V);
+		Graph g = new Graph(nb_sommets);
+		for (int i = 0; i < nb_sommets; i++) {
+			System.out.println("i = "+i);
+			boolean[] bits = new boolean[V];
+			for (int h =0; h < V; h++) 
+				bits[h] = (i & (1 << h)) != 0;
+			for (int j = 0; j < V; j++) {
+				System.out.println("j = "+j);
+				boolean op = next(j).get(0).from.operateur;
+				boolean resultat;
+				resultat = op;
+				String symb = (op)? "/\\" : "\\/" ;
+				for (Edge e : prev(j)) {
+					boolean p = (e.sign == '+')?bits[e.from.num]:!bits[e.from.num] ;
+					resultat = (op) ? resultat && p : resultat || p;
+
+					System.out.print("   "+p+" "+symb+" ");
+				}
+				System.out.println("");
+				if (resultat ^ bits[j]) {
+					System.out.println("resultat = "+resultat);
+					int to = (int) ((resultat) ? i + Math.pow(2, j) : i - Math.pow(2, j));
+					System.out.println("to ="+to);
+					g.addEdge(new Edge(new Sommet(i, true), new Sommet(to, true), '*'));
+				}
+			}
+
+		}
+
+		return g;
 	}
 }
