@@ -6,7 +6,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class Main {
 
@@ -15,66 +14,33 @@ public class Main {
 	private Graph graph;
 
 	public Main() throws IOException {
-		
-		lireFichier("graph1");
+		String nom = "graph1" ;
+		lireFichier(nom);
 		construireGraph();
-		graph.writeDot("dot.txt", true);
-		Runtime.getRuntime().exec("circo -Tjpg -o img.jpg dot.txt");
+		
+		graph.writeDot("dot1.txt", false, null);
+		Runtime.getRuntime().exec("circo -Tjpg -o "+nom+".jpg dot1.txt");
+		
+		ArrayList<ArrayList<Integer>> coupe = graph.minCut();
+		while(!graph.coupeValide(coupe)) coupe = graph.minCut() ;
+		System.out.println(coupe);
+		graph.writeDot("dot2.txt", false, coupe);
+		Runtime.getRuntime().exec("dot -Tjpg -o "+nom+"Cut.jpg dot2.txt");
 
-		/*HashMap<Integer, ArrayList<Integer>> coupe = new HashMap<Integer, ArrayList<Integer>>();
-		for (int i = 1; i <= nb_noeud; i++) {
-			ArrayList<Integer> l = new ArrayList<Integer>();
-			l.add(i);
-			coupe.put(i, l);
-		}
+		ArrayList<Integer> todo = new ArrayList<Integer>();
+		for (int i = 1; i < nb_noeud+1; i++)
+			todo.add(new Integer(i));
 		
-		graph.contraction(new Edge(new Sommet(10, false), new Sommet(8, false), '+'), coupe) ;
-		
-		graph.writeDot("dot2.txt", true);
-		Runtime.getRuntime().exec("circo -Tjpg -o img1.jpg dot2.txt");
-		
-		graph.contraction(new Edge(new Sommet(10, false), new Sommet(9, false), '+'), coupe) ;
-		
-		graph.writeDot("dot3.txt", true);
-		Runtime.getRuntime().exec("circo -Tjpg -o img2.jpg dot3.txt");
-		
-		graph.contraction(new Edge(new Sommet(6, false), new Sommet(10, false), '+'), coupe) ;
-		
-		graph.writeDot("dot4.txt", true);
-		Runtime.getRuntime().exec("circo -Tjpg -o img3.jpg dot4.txt");
-		
-		graph.contraction(new Edge(new Sommet(10, false), new Sommet(6, false), '+'), coupe) ;
-		
-		graph.writeDot("dot5.txt", true);
-		Runtime.getRuntime().exec("circo -Tjpg -o img4.jpg dot5.txt");
-		
-		graph.contraction(new Edge(new Sommet(9, false), new Sommet(10, false), '+'), coupe) ;
-		
-		graph.writeDot("dot6.txt", true);
-		Runtime.getRuntime().exec("circo -Tjpg -o img5.jpg dot6.txt");
-		
-		graph.contraction(new Edge(new Sommet(9, false), new Sommet(10, false), '+'), coupe) ;
-		
-		graph.writeDot("dot7.txt", true);
-		Runtime.getRuntime().exec("circo -Tjpg -o img6.jpg dot7.txt");*/
-		
-		try {
-			int i = 0;
-			while(i<100){
-				construireGraph();
-				System.out.println(""+(i++)+" "+graph.minCut());
-			}
-		} catch (CloneNotSupportedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		graph.writeDot("dot3.txt", false, graph.SCC());
+		Runtime.getRuntime().exec("dot -Tjpg -o "+nom+"SCC.jpg dot3.txt");
+
 	}
 
 	private void lireFichier(String path) throws IOException {
 		BufferedReader f = new BufferedReader(new FileReader(new File(path)));
 		String retour = "", line = "";
 		while ((line = f.readLine()) != null) {
-			nb_noeud = line.length() ;
+			nb_noeud = line.length();
 			retour = retour + line + " ";
 		}
 		f.close();
@@ -96,7 +62,7 @@ public class Main {
 			colonne = 1;
 			while ((c = (char) s2.read()) != 65535) {
 				operande2 = (splited[colonne - 1].charAt(colonne - 1) == '1') ? true : false;
-				if (c != '0')
+				if (c != '0' && ligne != colonne)
 					graph.addEdge(new Edge(source, new Sommet(colonne, operande2), c));
 				colonne++;
 			}

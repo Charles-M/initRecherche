@@ -49,6 +49,6 @@ public class Edge {
 
 	@Override
 	public String toString() {
-		return to + " <-- " + from;
+		return to + " <-- " + from + "("+sign+")";
 	}
 }

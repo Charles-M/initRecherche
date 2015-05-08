@@ -3,9 +3,10 @@ package graph;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
-public class Graph implements Cloneable {
+public class Graph {
 	private ArrayList<Edge>[] adj;
 	int V;
 	int E;
@@ -20,6 +21,16 @@ public class Graph implements Cloneable {
 
 	}
 
+	public Graph(ArrayList<Edge>[] adj, int v, int e) {
+		super();
+		this.adj = new ArrayList[v];
+		for (int i = 0; i < adj.length; i++) {
+			this.adj[i] = new ArrayList<Edge>(adj[i]);
+		}
+		V = v;
+		E = e;
+	}
+
 	public int vertices() {
 		return V;
 	}
@@ -31,13 +42,10 @@ public class Graph implements Cloneable {
 		adj[w].add(e);
 	}
 
-	public void removeEdge(Edge e) {
+	public boolean removeEdge(Edge e) {
 		int v = e.from.num;
 		int w = e.to.num;
-		while (adj[v].remove(e)) {
-		}
-		while (adj[w].remove(e)) {
-		}
+		return (adj[v].remove(e)) || (adj[w].remove(e));
 	}
 
 	public ArrayList<Edge> adj(int v) {
@@ -62,14 +70,23 @@ public class Graph implements Cloneable {
 		return list;
 	}
 
-	public void writeDot(String s, boolean horizontal) {
+	public void writeDot(String s, boolean horizontal, ArrayList<ArrayList<Integer>> coupe) {
 		try {
 			PrintWriter writer = new PrintWriter(s, "UTF-8");
 			writer.println("digraph G{");
+			writer.println("splines=true;");
 			if (horizontal)
 				writer.println("rankdir=\"LR\"");
+			if (coupe != null) {
+				for (ArrayList<Integer> L : coupe) {
+					writer.print("subgraph cluster" + Math.abs(L.hashCode()) + "{");
+					for (Integer i : L)
+						writer.print(i + ";");
+					writer.println("}");
+				}
+			}
 			for (Edge e : edges())
-				writer.println(e.from + " -> " + e.to + "[label=\"" + e.sign + "\"];");
+				writer.println(e.from + " -> " + e.to + "[color=\"" + ((e.sign == '+') ? "darkgreen" : "red") + "\"];");
 			writer.println("}");
 			writer.close();
 		} catch (IOException e) {
@@ -77,20 +94,22 @@ public class Graph implements Cloneable {
 		}
 	}
 
-	public void dfs(Integer v, ArrayList<Integer> mark, ArrayList<Integer> todo) {
+	public void dfs(Integer v, ArrayList<Integer> gray, ArrayList<Integer> black, ArrayList<Integer> todo) {
 		if (!todo.remove(v))
 			return;
-		mark.add(v);
+		gray.add(v);
 		for (Edge s : next(v))
-			if (!mark.contains(s.to.num))
-				dfs(s.to.num, mark, todo);
+			if (!gray.contains(s.to.num))
+				dfs(s.to.num, gray, black, todo);
+		black.add(v) ;
 	}
 
 	public ArrayList<Integer> dfs(ArrayList<Integer> todo) {
-		ArrayList<Integer> mark = new ArrayList<Integer>();
+		ArrayList<Integer> gray = new ArrayList<Integer>();
+		ArrayList<Integer> black = new ArrayList<Integer>();
 		while (!todo.isEmpty())
-			dfs(todo.get(0), mark, todo);
-		return mark;
+			dfs(todo.get(0), gray, black, todo);
+		return black;
 	}
 
 	public Graph inverserGraph() {
@@ -104,23 +123,25 @@ public class Graph implements Cloneable {
 	public ArrayList<ArrayList<Integer>> SCC() {
 		ArrayList<ArrayList<Integer>> listeComposantesConnexes = new ArrayList<ArrayList<Integer>>();
 		ArrayList<Integer> todo = new ArrayList<Integer>();
-		ArrayList<Integer> mark = new ArrayList<Integer>();
 		for (int i = 1; i < V; i++)
 			todo.add(new Integer(i));
+		ArrayList<Integer> gray = new ArrayList<Integer>();
+		ArrayList<Integer> black = new ArrayList<Integer>();
 		ArrayList<Integer> s = dfs(todo);
 
 		Graph inv = inverserGraph();
-		// Collections.reverse(s);
+		Collections.reverse(s);
 
 		while (!s.isEmpty()) {
-			mark = new ArrayList<Integer>();
-			inv.dfs(s.get(0), mark, s);
-			listeComposantesConnexes.add(mark);
+			gray = new ArrayList<Integer>();
+			black = new ArrayList<Integer>();
+			inv.dfs(s.get(0), gray, black, s);
+			listeComposantesConnexes.add(black);
 		}
 		return listeComposantesConnexes;
 	}
 
-	public HashMap<Integer, ArrayList<Integer>> minCut() throws CloneNotSupportedException {
+	public ArrayList<ArrayList<Integer>> minCut() {
 		HashMap<Integer, ArrayList<Integer>> coupe = new HashMap<Integer, ArrayList<Integer>>();
 		for (int i = 1; i < V; i++) {
 			ArrayList<Integer> l = new ArrayList<Integer>();
@@ -128,7 +149,7 @@ public class Graph implements Cloneable {
 			coupe.put(i, l);
 		}
 
-		Graph copy = (Graph) clone();
+		Graph copy = new Graph(adj, V, E);
 
 		int cnt = copy.V - 1;
 		while (cnt > 2) {
@@ -136,10 +157,10 @@ public class Graph implements Cloneable {
 			ArrayList<Edge> arete = (ArrayList<Edge>) copy.edges();
 			int rand = (int) (Math.random() * arete.size());
 			Edge tmp = arete.get(rand);
-			System.out.println("tmp = " + tmp);
+			// System.out.println("tmp = " + tmp);
 			copy.contraction(tmp, coupe);
 		}
-		return coupe;
+		return new ArrayList<ArrayList<Integer>>(coupe.values());
 	}
 
 	// Algo de Karger
@@ -152,19 +173,64 @@ public class Graph implements Cloneable {
 		Integer suppr = edge.to.num;
 		ArrayList<Edge> ad = new ArrayList<Edge>(adj(suppr));
 		for (Edge e : ad) {
-			if (e.to.num != edge.to.num || e.from.num != edge.from.num) {
+			 //if (e.to.num != edge.to.num || e.from.num != edge.from.num) {
+			if (!e.equals(edge)) {
 				if (e.to.num == suppr) {
-					if (e.from.num != edge.from.num){
+					if (e.from.num != edge.from.num) {
 						addEdge(new Edge(e.from, edge.from, edge.sign));
 					}
 				} else {
-					if (edge.from.num != e.to.num){
+					if (edge.from.num != e.to.num) {
 						addEdge(new Edge(edge.from, e.to, edge.sign));
 					}
 				}
-				removeEdge(e);
+				while (removeEdge(e))
+					;
 			}
 		}
-		removeEdge(edge);
+		while (removeEdge(edge))
+			;
+	}
+
+	public boolean coupeValide(ArrayList<ArrayList<Integer>> coupe) {
+		ArrayList<Integer> liste1 = coupe.get(0);
+		ArrayList<Integer> liste2 = coupe.get(1);
+
+		int somme = liste1.size() + liste2.size();
+
+		if (liste1.size() < somme / 3 || liste2.size() < somme / 3) 		return false;
+		boolean cpt[] = new boolean[somme];
+		for (Integer i : liste1) {
+			for (Edge e : next(i)) {
+				if (liste2.contains(e.to.num)) {
+					cpt[e.from.num - 1] = true;
+				}
+			}
+
+		}
+		int cpt1 = 0;
+		for (int i = 0; i < cpt.length; i++) {
+			if (cpt[i])
+				cpt1++;
+		}
+		if (cpt1 != 1)	return false;
+
+		cpt = new boolean[somme];
+		for (Integer i : liste2) {
+			for (Edge e : next(i)) {
+				if (liste1.contains(e.to.num)) {
+					cpt[e.from.num - 1] = true;
+				}
+			}
+
+		}
+		cpt1 = 0;
+		for (int i = 0; i < cpt.length; i++) {
+			if (cpt[i])
+				cpt1++;
+		}
+		if (cpt1 != 1)	return false;
+
+		return true;
 	}
 }

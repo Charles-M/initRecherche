@@ -11,12 +11,12 @@ public class Sommet {
 		this.num = num;
 		this.operateur = operateur;
 	}
-
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + num;
+		result = prime * result + ((num == null) ? 0 : num.hashCode());
 		return result;
 	}
 
@@ -29,14 +29,18 @@ public class Sommet {
 		if (getClass() != obj.getClass())
 			return false;
 		Sommet other = (Sommet) obj;
-		if (num != other.num)
+		if (num == null) {
+			if (other.num != null)
+				return false;
+		} else if (!num.equals(other.num))
 			return false;
 		return true;
 	}
-	
+
 	@Override
 	public String toString() {
 		String op = (operateur)? "AND": "OR" ;
-		return "\""+num+" ("+op+")\"";
+		return num+"" ;
+		//return "\""+num+" ("+op+")\"";
 	}
 }
