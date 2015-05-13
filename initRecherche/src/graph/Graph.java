@@ -153,7 +153,7 @@ public class Graph {
 
 	public ArrayList<ArrayList<Integer>> minCut() {
 		HashMap<Integer, ArrayList<Integer>> coupe = new HashMap<Integer, ArrayList<Integer>>();
-		for (int i = 1; i < V; i++) {
+		for (int i = 0; i < V; i++) {
 			ArrayList<Integer> l = new ArrayList<Integer>();
 			l.add(i);
 			coupe.put(i, l);
@@ -161,7 +161,7 @@ public class Graph {
 
 		Graph copy = new Graph(adj, V, E);
 
-		int cnt = copy.V - 1;
+		int cnt = copy.V ;
 		while (cnt > 2) {
 			cnt--;
 			ArrayList<Edge> arete = (ArrayList<Edge>) copy.edges();
@@ -176,14 +176,13 @@ public class Graph {
 	// Algo de Karger
 	public void contraction(Edge edge, HashMap<Integer, ArrayList<Integer>> coupe) {
 
-		for (Integer i : coupe.get(edge.to.num)) {
+		for (Integer i : coupe.get(edge.to.num))
 			coupe.get(edge.from.num).add(i);
-		}
 		coupe.remove(edge.to.num);
 		Integer suppr = edge.to.num;
 		ArrayList<Edge> ad = new ArrayList<Edge>(adj(suppr));
 		for (Edge e : ad) {
-			// if (e.to.num != edge.to.num || e.from.num != edge.from.num) {
+			//if (e.to.num != edge.to.num || e.from.num != edge.from.num) {
 			if (!e.equals(edge)) {
 				if (e.to.num == suppr) {
 					if (e.from.num != edge.from.num) {
