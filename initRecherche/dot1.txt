@@ -1,0 +1,11 @@
+digraph G{
+"0 (OR)" -> "1 (AND)"[color="darkgreen"];
+"0 (OR)" -> "4 (OR)"[color="darkgreen"];
+"1 (AND)" -> "2 (OR)"[color="red"];
+"2 (OR)" -> "3 (AND)"[color="darkgreen"];
+"3 (AND)" -> "0 (OR)"[color="red"];
+"4 (OR)" -> "5 (AND)"[color="red"];
+"5 (AND)" -> "6 (OR)"[color="darkgreen"];
+"7 (AND)" -> "0 (OR)"[color="darkgreen"];
+"7 (AND)" -> "6 (OR)"[color="red"];
+}

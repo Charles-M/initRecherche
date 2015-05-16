@@ -11,7 +11,7 @@ public class Sommet {
 		this.num = num;
 		this.operateur = operateur;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -39,8 +39,8 @@ public class Sommet {
 
 	@Override
 	public String toString() {
-		String op = (operateur)? "AND": "OR" ;
-		//return num+"" ;
-		return "\""+num+" ("+op+")\"";
+		String op = (operateur) ? "AND" : "OR";
+		// return num+"" ;
+		return "\"" + num + " (" + op + ")\"";
 	}
 }

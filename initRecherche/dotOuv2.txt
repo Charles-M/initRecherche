@@ -1,15 +1,10 @@
 digraph G{
-"0 (OR)" -> "1 (OR)"[color="red"];
-"0 (OR)" -> "1 (OR)"[color="red"];
-"1 (OR)" -> "2 (OR)"[color="red"];
-"1 (OR)" -> "2 (OR)"[color="red"];
-"2 (OR)" -> "0 (OR)"[color="red"];
-"2 (OR)" -> "3 (OR)"[color="red"];
-"2 (OR)" -> "3 (OR)"[color="red"];
-"2 (OR)" -> "0 (OR)"[color="red"];
-"3 (OR)" -> "4 (OR)"[color="red"];
-"3 (OR)" -> "5 (OR)"[color="red"];
-"5 (OR)" -> "6 (OR)"[color="red"];
-"6 (OR)" -> "3 (OR)"[color="red"];
-"6 (OR)" -> "3 (OR)"[color="red"];
+1[color=cyan]
+0[style=filled, fillcolor=pink]
+"0 (OR)" -> "1 (AND)"[color="darkgreen"];
+"0 (OR)" -> "4 (OR)"[color="darkgreen"];
+"4 (OR)" -> "5 (AND)"[color="red"];
+"5 (AND)" -> "6 (OR)"[color="darkgreen"];
+"7 (AND)" -> "0 (OR)"[color="darkgreen"];
+"7 (AND)" -> "6 (OR)"[color="red"];
 }

@@ -48,6 +48,14 @@ public class Graph {
 		return (adj[v].remove(e)) || (adj[w].remove(e));
 	}
 
+	public void removeSommet(int i){
+		for(Edge e : edges()){
+			if(e.from.num == i|| e.to.num ==i)
+				while(removeEdge(e));
+		}
+		adj[i] = new ArrayList<Edge>();
+	}
+	
 	public ArrayList<Edge> adj(int v) {
 		return adj[v];
 	}
@@ -82,8 +90,8 @@ public class Graph {
 		try {
 			PrintWriter writer = new PrintWriter(s, "UTF-8");
 			writer.println("digraph G{");
-			//writer.println("splines=true;");
-			//writer.println("outputorder=breadthfirst;");
+			// writer.println("splines=true;");
+			// writer.println("outputorder=breadthfirst;");
 			// writer.println("truecolor=true;");
 			if (horizontal)
 				writer.println("rankdir=\"LR\"");
@@ -133,7 +141,7 @@ public class Graph {
 	public ArrayList<ArrayList<Integer>> SCC() {
 		ArrayList<ArrayList<Integer>> listeComposantesConnexes = new ArrayList<ArrayList<Integer>>();
 		ArrayList<Integer> todo = new ArrayList<Integer>();
-		for (int i = 1; i < V; i++)
+		for (int i = 0; i < V; i++)
 			todo.add(new Integer(i));
 		ArrayList<Integer> gray = new ArrayList<Integer>();
 		ArrayList<Integer> black = new ArrayList<Integer>();
@@ -161,7 +169,7 @@ public class Graph {
 
 		Graph copy = new Graph(adj, V, E);
 
-		int cnt = copy.V ;
+		int cnt = copy.V;
 		while (cnt > 2) {
 			cnt--;
 			ArrayList<Edge> arete = (ArrayList<Edge>) copy.edges();
@@ -182,7 +190,7 @@ public class Graph {
 		Integer suppr = edge.to.num;
 		ArrayList<Edge> ad = new ArrayList<Edge>(adj(suppr));
 		for (Edge e : ad) {
-			//if (e.to.num != edge.to.num || e.from.num != edge.from.num) {
+			// if (e.to.num != edge.to.num || e.from.num != edge.from.num) {
 			if (!e.equals(edge)) {
 				if (e.to.num == suppr) {
 					if (e.from.num != edge.from.num) {
@@ -213,7 +221,7 @@ public class Graph {
 		for (Integer i : liste1) {
 			for (Edge e : next(i)) {
 				if (liste2.contains(e.to.num)) {
-					cpt[e.from.num - 1] = true;
+					cpt[e.from.num] = true;
 				}
 			}
 
@@ -230,7 +238,7 @@ public class Graph {
 		for (Integer i : liste2) {
 			for (Edge e : next(i)) {
 				if (liste1.contains(e.to.num)) {
-					cpt[e.from.num - 1] = true;
+					cpt[e.from.num] = true;
 				}
 			}
 
@@ -250,32 +258,94 @@ public class Graph {
 		int nb_sommets = (int) Math.pow(2, V);
 		Graph g = new Graph(nb_sommets);
 		for (int i = 0; i < nb_sommets; i++) {
-			//System.out.println("i = "+i);
+			// System.out.println("i = "+i);
 			boolean[] bits = new boolean[V];
-			for (int h =0; h < V; h++) 
+			for (int h = 0; h < V; h++)
 				bits[h] = (i & (1 << h)) != 0;
 			for (int j = 0; j < V; j++) {
-				//System.out.println("j = "+j);
+				// System.out.println("j = "+j);
 				boolean op = next(j).get(0).from.operateur;
 				boolean resultat;
 				resultat = op;
-				//String symb = (op)? "/\\" : "\\/" ;
+				// String symb = (op)? "/\\" : "\\/" ;
 				for (Edge e : prev(j)) {
-					boolean p = (e.sign == '+')?bits[e.from.num]:!bits[e.from.num] ;
+					boolean p = (e.sign == '+') ? bits[e.from.num] : !bits[e.from.num];
 					resultat = (op) ? resultat && p : resultat || p;
 
-					//System.out.print("   "+p+" "+symb+" ");
+					// System.out.print("   "+p+" "+symb+" ");
 				}
-				//System.out.println("");
+				// System.out.println("");
 				if (resultat ^ bits[j]) {
-					//System.out.println("resultat = "+resultat);
+					// System.out.println("resultat = "+resultat);
 					int to = (int) ((resultat) ? i + Math.pow(2, j) : i - Math.pow(2, j));
-					//System.out.println("to ="+to);
+					// System.out.println("to ="+to);
 					g.addEdge(new Edge(new Sommet(i, true), new Sommet(to, true), '*'));
 				}
 			}
 		}
 
 		return g;
+	}
+
+	public GrapheOuvert[] getGrapheOuvert() {
+
+		ArrayList<ArrayList<Integer>> coupe = minCut();
+		while (!coupeValide(coupe))
+			coupe = minCut();
+
+		System.out.println(coupe);
+		writeDot("dot2.txt", false, coupe);
+		try {
+			Runtime.getRuntime().exec("dot -Tjpg -o images/graphCut.jpg dot2.txt");
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+		GrapheOuvert ouvert1 = new GrapheOuvert(V, coupe.get(0).size());
+		GrapheOuvert ouvert2 = new GrapheOuvert(V, coupe.get(1).size());
+		// faut setter l'emetteur et add les sommets frontiere
+		for (Integer i : coupe.get(0)) {
+			// System.out.println(i);
+			for (Integer integ : coupe.get(1)) {
+				for (Edge e : next(i)) {
+					if (e.to.num == integ) {
+						ouvert1.setEmetteur(i);
+					}
+				}
+				for (Edge e : prev(i)) {
+					if (e.from.num == integ) {
+						ouvert1.addSommetFrontiere(e);
+					}
+				}
+			}
+			for (Edge e : next(i)) {
+				if (i != ouvert1.getEmetteur() || (i == ouvert1.getEmetteur() && coupe.get(0).contains(e.to.num))) {
+					ouvert1.addEdge(e);
+				}
+			}
+		}
+		for (Integer i : coupe.get(1)) {
+			for (Integer integ : coupe.get(0)) {
+				for (Edge e : next(i)) {
+					if (e.to.num == integ) {
+						ouvert2.setEmetteur(i);
+					}
+				}
+				for (Edge e : prev(i)) {
+					if (e.from.num == integ) {
+						ouvert2.addSommetFrontiere(e);
+					}
+				}
+			}
+			for (Edge e : next(i)) {
+				if (i != ouvert2.getEmetteur() || (i == ouvert2.getEmetteur() && coupe.get(1).contains(e.to.num))) {
+					ouvert2.addEdge(e);
+				}
+			}
+		}
+		// System.out.println(ouvert1.getFrontiere());
+		// System.out.println(ouvert2.getFrontiere());
+		return new GrapheOuvert[] { ouvert1, ouvert2 };
 	}
 }

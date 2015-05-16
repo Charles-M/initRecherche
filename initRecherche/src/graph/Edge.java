@@ -5,6 +5,7 @@ public class Edge {
 	public Sommet from;
 	public Sommet to;
 	public char sign;
+	public String label = "";
 
 	public Edge(Sommet from, Sommet to, char sign) {
 		super();
@@ -47,8 +48,16 @@ public class Edge {
 		return true;
 	}
 
+	public String getLabel() {
+		return label;
+	}
+
+	public void setLabel(String label) {
+		this.label = label;
+	}
+
 	@Override
 	public String toString() {
-		return to + " <-- " + from + "("+sign+")";
+		return from + " --> " + to + "(" + sign + ")";
 	}
 }
