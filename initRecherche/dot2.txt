@@ -1,13 +1,10 @@
 digraph G{
-subgraph cluster1026{2;3;}
-subgraph cluster1006852194{4;5;7;6;0;1;}
-"0 (OR)" -> "1 (AND)"[color="darkgreen"];
-"0 (OR)" -> "4 (OR)"[color="darkgreen"];
-"1 (AND)" -> "2 (OR)"[color="red"];
-"2 (OR)" -> "3 (AND)"[color="darkgreen"];
-"3 (AND)" -> "0 (OR)"[color="red"];
-"4 (OR)" -> "5 (AND)"[color="red"];
-"5 (AND)" -> "6 (OR)"[color="darkgreen"];
-"7 (AND)" -> "0 (OR)"[color="darkgreen"];
-"7 (AND)" -> "6 (OR)"[color="red"];
+subgraph cluster31744{2;1;0;}
+subgraph cluster34{3;}
+"0 (OR)" -> "1 (OR)"[color="red"];
+"1 (OR)" -> "0 (OR)"[color="red"];
+"1 (OR)" -> "2 (OR)"[color="darkgreen"];
+"1 (OR)" -> "3 (OR)"[color="red"];
+"2 (OR)" -> "1 (OR)"[color="red"];
+"3 (OR)" -> "1 (OR)"[color="red"];
 }

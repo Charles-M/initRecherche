@@ -1,5 +1,8 @@
 digraph G{
-3[color=cyan]
-2[style=filled, fillcolor=pink]
-"2 (OR)" -> "3 (AND)"[color="darkgreen"];
+1[color=cyan]
+1[style=filled, fillcolor=pink]
+"0 (OR)" -> "1 (OR)"[color="red"];
+"1 (OR)" -> "0 (OR)"[color="red"];
+"1 (OR)" -> "2 (OR)"[color="darkgreen"];
+"2 (OR)" -> "1 (OR)"[color="red"];
 }

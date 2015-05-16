@@ -33,14 +33,14 @@ public class GrapheOuvert extends Graph {
 	}
 
 	public GraphTransOuvert transitionOuvert() {
-		System.out.println("v = " + V);
+		//System.out.println("v = " + V);
 		int nb_sommets = (int) Math.pow(2, NEffectif);
 		GraphTransOuvert g = new GraphTransOuvert(nb_sommets, emetteur);
 		for (int i = 0; i < nb_sommets; i++) {
 			int bitemetteur = 0;
 			boolean[] bits = null;
 			for (int parcours = 0; parcours <= 1; parcours++) {
-				System.out.println("i = " + i);
+				//System.out.println("i = " + i);
 				bits = new boolean[V];
 				for (int h = 0; h < V; h++)
 					bits[h] = (i & (1 << h)) != 0;
@@ -50,11 +50,11 @@ public class GrapheOuvert extends Graph {
 						bitemetteur = cnt;
 					boolean onestpasseparla = false;
 					// if (!adj(j).isEmpty() || NEffectif == 1) {
-					System.out.println("j = " + j);
+					//System.out.println("j = " + j);
 					boolean op = false;
 					op = Main.contenu_fichier.charAt(j + j * (V + 1)) != '0';
-					System.out.println("char = " + Main.contenu_fichier.charAt(j + j * (V + 1)));
-					System.out.println(j + " = " + op);
+					//System.out.println("char = " + Main.contenu_fichier.charAt(j + j * (V + 1)));
+					//System.out.println(j + " = " + op);
 					boolean resultat;
 					resultat = op;
 					// String symb = (op)? "/\\" : "\\/" ;
@@ -65,17 +65,17 @@ public class GrapheOuvert extends Graph {
 					for (Edge e : frontiere) {
 						if (e.to.num == j) {
 							onestpasseparla = true;
-							System.out.println("aaa");
+							//System.out.println("aaa");
 							boolean p = (e.sign == '+') ? parcours == 1 : parcours == 0;
 							resultat = (op) ? resultat && p : resultat || p;
 						}
 					}
 					if (!adj(j).isEmpty() || onestpasseparla) {
 						if (resultat ^ bits[cnt]) {
-							System.out.println("cnt = " + cnt);
-							System.out.println("resultat = " + resultat);
+							//System.out.println("cnt = " + cnt);
+							//System.out.println("resultat = " + resultat);
 							int to = (int) ((resultat) ? i + Math.pow(2, cnt) : i - Math.pow(2, cnt));
-							System.out.println("to =" + to);
+							//System.out.println("to =" + to);
 							Edge e = new Edge(new Sommet(i, true), new Sommet(to, true), '-');
 							e.setLabel(parcours + "");
 							g.addEdge(e);
@@ -83,7 +83,7 @@ public class GrapheOuvert extends Graph {
 						cnt++;
 					}
 					// }
-					System.out.println("");
+					//System.out.println("");
 				}
 			}
 			if (!g.adj(i).isEmpty()) {

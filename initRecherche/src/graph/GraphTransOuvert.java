@@ -76,13 +76,26 @@ public class GraphTransOuvert extends Graph {
 	}
 
 	public Graph papillon(GraphTransOuvert transAtlantique) {
-		Graph g = new Graph(V);
-		for (int i = 0; i < V+transAtlantique.V; i++) {
+		Graph g = new Graph(V * transAtlantique.V);
+		for (int i = 0; i < V; i++) {
 			for (Edge e : next(i)) {
-
+				for (int j = 0; j < transAtlantique.V; j++) {
+					Edge e2 = transAtlantique.boucle(j);
+					if (e.getLabel().equals(e2.getLabel())) {
+						g.addEdge(new Edge(new Sommet(i + V * j, true), new Sommet(e.to.num + V * e2.to.num, true), '*'));
+					}
+				}
+			}
+			Edge e = boucle(i);
+			for (int j = 0; j < transAtlantique.V; j++) {
+				for (Edge e2 : transAtlantique.next(j)) {
+					if (e.getLabel().equals(e2.getLabel())) {
+						g.addEdge(new Edge(new Sommet(i + V * j, true), new Sommet(e.to.num + V * e2.to.num, true), '*'));
+					}
+				}
 			}
 		}
-		return null;
+		return g;
 	}
 
 }

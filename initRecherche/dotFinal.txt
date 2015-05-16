@@ -1,0 +1,34 @@
+digraph G{
+"0 (AND)" -> "1 (AND)"[color="red"];
+"0 (AND)" -> "2 (AND)"[color="red"];
+"0 (AND)" -> "8 (AND)"[color="red"];
+"1 (AND)" -> "3 (AND)"[color="red"];
+"1 (AND)" -> "9 (AND)"[color="red"];
+"2 (AND)" -> "6 (AND)"[color="red"];
+"3 (AND)" -> "2 (AND)"[color="red"];
+"3 (AND)" -> "7 (AND)"[color="red"];
+"4 (AND)" -> "5 (AND)"[color="red"];
+"4 (AND)" -> "6 (AND)"[color="red"];
+"4 (AND)" -> "0 (AND)"[color="red"];
+"4 (AND)" -> "12 (AND)"[color="red"];
+"5 (AND)" -> "7 (AND)"[color="red"];
+"5 (AND)" -> "1 (AND)"[color="red"];
+"5 (AND)" -> "13 (AND)"[color="red"];
+"7 (AND)" -> "6 (AND)"[color="red"];
+"8 (AND)" -> "9 (AND)"[color="red"];
+"8 (AND)" -> "10 (AND)"[color="red"];
+"9 (AND)" -> "11 (AND)"[color="red"];
+"10 (AND)" -> "14 (AND)"[color="red"];
+"10 (AND)" -> "2 (AND)"[color="red"];
+"11 (AND)" -> "10 (AND)"[color="red"];
+"11 (AND)" -> "15 (AND)"[color="red"];
+"11 (AND)" -> "3 (AND)"[color="red"];
+"12 (AND)" -> "13 (AND)"[color="red"];
+"12 (AND)" -> "14 (AND)"[color="red"];
+"12 (AND)" -> "8 (AND)"[color="red"];
+"13 (AND)" -> "9 (AND)"[color="red"];
+"14 (AND)" -> "6 (AND)"[color="red"];
+"15 (AND)" -> "14 (AND)"[color="red"];
+"15 (AND)" -> "13 (AND)"[color="red"];
+"15 (AND)" -> "7 (AND)"[color="red"];
+}
