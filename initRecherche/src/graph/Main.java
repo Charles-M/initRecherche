@@ -13,11 +13,11 @@ public class Main {
 	private Graph graph;
 
 	public Main() throws IOException {
-		String nom = "graphMiniDroso";
+		String nom = "graph4";
 		lireFichier(nom);
 		construireGraph();
 		graph.writeDot("dot1.txt", false, null);
-		Runtime.getRuntime().exec("circo -Tjpg -o images/" + nom + ".jpg dot1.txt");
+		Runtime.getRuntime().exec("dot -Tjpg -o images/" + nom + ".jpg dot1.txt");
 
 		/********** TRANSITION **********/
 
@@ -29,7 +29,7 @@ public class Main {
 
 		GrapheOuvert[] go = graph.getGrapheOuvert();
 		go[0].writeDot("dotOuv1.txt", false);
-		Runtime.getRuntime().exec("dot -Tjpg -o images/" + nom + "Ouvert1.jpg dotOuv1.txt");
+		Runtime.getRuntime().exec("circo -Tjpg -o images/" + nom + "Ouvert1.jpg dotOuv1.txt");
 		go[1].writeDot("dotOuv2.txt", false);
 		Runtime.getRuntime().exec("dot -Tjpg -o images/" + nom + "Ouvert2.jpg dotOuv2.txt");
 
@@ -37,26 +37,26 @@ public class Main {
 		GraphTransOuvert transAtlantique = go[1].transitionOuvert();
 
 		transAlpes.writeDot("dotTransOuv1.txt", false);
-		Runtime.getRuntime().exec("dot -Tjpg -o images/" + nom + "TransOuvert1.jpg dotTransOuv1.txt");
+		Runtime.getRuntime().exec("circo -Tjpg -o images/" + nom + "TransOuvert1.jpg dotTransOuv1.txt");
 		transAtlantique.writeDot("dotTransOuv2.txt", false);
 		Runtime.getRuntime().exec("dot -Tjpg -o images/" + nom + "TransOuvert2.jpg dotTransOuv2.txt");
 
-		/*
-		 * transAlpes.simplification(); transAtlantique.simplification();
-		 * 
-		 * 
-		 * transAlpes.writeDot("dotTransOuv1Simpl.txt", false);
-		 * Runtime.getRuntime().exec("dot -Tjpg -o images/" + nom +
-		 * "TransOuvert1Simpl.jpg dotTransOuv1Simpl.txt");
-		 * 
-		 * transAtlantique.writeDot("dotTransOuv2Simpl.txt", false);
-		 * Runtime.getRuntime().exec("dot -Tjpg -o images/" + nom +
-		 * "TransOuvert2Simpl.jpg dotTransOuv2Simpl.txt");
-		 */
+		
+		  transAlpes.simplification(); transAtlantique.simplification();
+		  
+		  
+		  transAlpes.writeDot("dotTransOuv1Simpl.txt", false);
+		  Runtime.getRuntime().exec("dot -Tjpg -o images/" + nom +
+		  "TransOuvert1Simpl.jpg dotTransOuv1Simpl.txt");
+		  
+		  transAtlantique.writeDot("dotTransOuv2Simpl.txt", false);
+		  Runtime.getRuntime().exec("dot -Tjpg -o images/" + nom +
+		 "TransOuvert2Simpl.jpg dotTransOuv2Simpl.txt");
+		 
 
 		Graph RESULTAT_FINAL = transAlpes.papillon(transAtlantique);
 		RESULTAT_FINAL.writeDot("dotFinal.txt", false, null);
-		Runtime.getRuntime().exec("dot -Tjpg -o images/" + nom + "TransPapillon.jpg dotFinal.txt");
+		Runtime.getRuntime().exec("circo -Tjpg -o images/" + nom + "TransPapillon.jpg dotFinal.txt");
 
 		/**************** SCC ***************/
 

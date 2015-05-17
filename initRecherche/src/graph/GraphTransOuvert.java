@@ -87,10 +87,12 @@ public class GraphTransOuvert extends Graph {
 				}
 			}
 			Edge e = boucle(i);
-			for (int j = 0; j < transAtlantique.V; j++) {
-				for (Edge e2 : transAtlantique.next(j)) {
-					if (e.getLabel().equals(e2.getLabel())) {
-						g.addEdge(new Edge(new Sommet(i + V * j, true), new Sommet(e.to.num + V * e2.to.num, true), '*'));
+			if (e != null) {
+				for (int j = 0; j < transAtlantique.V; j++) {
+					for (Edge e2 : transAtlantique.next(j)) {
+						if (e.getLabel().equals(e2.getLabel())) {
+							g.addEdge(new Edge(new Sommet(i + V * j, true), new Sommet(e.to.num + V * e2.to.num, true), '*'));
+						}
 					}
 				}
 			}
